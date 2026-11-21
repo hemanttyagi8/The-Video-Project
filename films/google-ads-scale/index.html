@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>How Google Ads Help Scale Your Business — Flat Explainer Reel</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      background: #05080e;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Inter', -apple-system, sans-serif;
+    }
+    #viewport-container {
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+    #wrapper {
+      position: relative;
+      width: 1080px;
+      height: 1920px;
+      transform-origin: center center;
+      flex-shrink: 0;
+    }
+    canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 1080px;
+      height: 1920px;
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <div id="viewport-container">
+    <div id="wrapper">
+      <canvas id="c" width="1080" height="1920"></canvas>
+    </div>
+  </div>
+  <script>
+    function fitScreen() {
+      const wrapper = document.getElementById('wrapper');
+      const scale = Math.min(window.innerWidth / 1080, window.innerHeight / 1920);
+      wrapper.style.transform = `scale(${scale})`;
+    }
+    window.addEventListener('resize', fitScreen);
+    fitScreen();
+  </script>
+  <script type="module" src="main.js"></script>
+</body>
+</html>
