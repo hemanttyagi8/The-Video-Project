@@ -1,0 +1,5 @@
+file 'E:/xammp/htdocs/The-Video-Project/films/google-ads-scale/audio/segments_eleven/scene1.mp3'
+file 'E:/xammp/htdocs/The-Video-Project/films/google-ads-scale/audio/segments_eleven/scene2.mp3'
+file 'E:/xammp/htdocs/The-Video-Project/films/google-ads-scale/audio/segments_eleven/scene3.mp3'
+file 'E:/xammp/htdocs/The-Video-Project/films/google-ads-scale/audio/segments_eleven/scene4.mp3'
+file 'E:/xammp/htdocs/The-Video-Project/films/google-ads-scale/audio/segments_eleven/scene5.mp3'

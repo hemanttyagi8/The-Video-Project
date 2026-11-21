@@ -3,7 +3,7 @@ import { PAL, drawRoundRect, drawBadge, drawGoogleG, drawStarRating } from './ui
 
 export function drawScene2(ctx, t) {
   const W = 1080;
-  const relT = t - 10.63;
+  const relT = t - 11.20;
 
   // Background Grid Matrix
   ctx.save();

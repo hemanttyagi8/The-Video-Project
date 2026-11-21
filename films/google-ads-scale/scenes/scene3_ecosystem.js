@@ -3,7 +3,7 @@ import { PAL, drawRoundRect, drawBadge } from './ui_components.js';
 
 export function drawScene3(ctx, t) {
   const W = 1080;
-  const relT = t - 21.79;
+  const relT = t - 23.30;
 
   // Background Grid Matrix
   ctx.save();

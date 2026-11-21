@@ -4,7 +4,7 @@ scenes = [
     {
         'id': 'scene1',
         'start': 0.0,
-        'end': 10.63,
+        'end': 11.08,
         'phrases': [
             'Agar aapka business scale nahi ho raha,',
             'Toh reason bilkul simple hai:',
@@ -14,52 +14,49 @@ scenes = [
     },
     {
         'id': 'scene2',
-        'start': 10.63,
-        'end': 21.79,
+        'start': 11.38,
+        'end': 23.18,
         'phrases': [
             'Yahan game badalta hai Google Ads!',
             'Google par roz 850 CRORE searches hoti hain,',
             'Jahan log wallet haath me lekar',
-            'Direct solution aur product dhoondhte hain!'
+            'Direct solution aur products dhoondhte hain!'
         ]
     },
     {
         'id': 'scene3',
-        'start': 21.79,
-        'end': 34.65,
+        'start': 23.48,
+        'end': 35.63,
         'phrases': [
             'Google Ads ka 3-Way Scaling Ecosystem dekho:',
             'Search Ads se High-Intent Buyers,',
-            'YouTube Ads se Massive Brand Trust,',
+            'YouTube Ads se Brand Trust,',
             'Aur Performance Max se 90% internet reach!'
         ]
     },
     {
         'id': 'scene4',
-        'start': 34.65,
-        'end': 47.47,
+        'start': 35.93,
+        'end': 48.50,
         'phrases': [
             'Sabse bada benefit: Pay-Per-Click!',
             'Jab tak serious customer click na kare, ZERO COST!',
             'Aur Smart Bidding AI automatic',
-            'Lowest cost par maximum sales generate karta hai!'
+            'Lowest cost par maximum sales laata hai!'
         ]
     },
     {
         'id': 'scene5',
-        'start': 47.47,
-        'end': 58.80,
+        'start': 48.80,
+        'end': 59.11,
         'phrases': [
             'Aapke competitors already customers le rahe hain.',
             'Stop waiting, start scaling!',
             'Comment karo GOOGLE,',
-            'Aur pao free 7-Day Scaling Strategy Blueprint!'
+            'Free 7-Day Scaling Blueprint ke liye!'
         ]
     }
 ]
-
-with open('films/google-ads-scale/audio/cues.json', 'w', encoding='utf-8') as f:
-    json.dump([{'id': s['id'], 'start': s['start'], 'end': s['end']} for s in scenes], f, indent=2)
 
 chunked_cues = []
 for sc in scenes:
@@ -81,6 +78,6 @@ for sc in scenes:
         cur_t += p_dur
 
 with open('films/google-ads-scale/audio/word_cues.json', 'w', encoding='utf-8') as f:
-    json.dump(chunked_cues, f, indent=2)
+    json.dump(chunked_cues, f, indent=2, ensure_ascii=False)
 
-print('Cues created successfully.')
+print('Word cues updated.')

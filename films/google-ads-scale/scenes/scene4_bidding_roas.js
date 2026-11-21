@@ -3,7 +3,7 @@ import { PAL, drawRoundRect, drawBadge, drawProgressBar } from './ui_components.
 
 export function drawScene4(ctx, t) {
   const W = 1080;
-  const relT = t - 34.65;
+  const relT = t - 35.80;
 
   // Background Grid Matrix
   ctx.save();

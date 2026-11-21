@@ -8,7 +8,7 @@ import { drawScene5 } from './scenes/scene5_cta.js';
 
 export const W = 1080;
 export const H = 1920;
-export const DUR = 58.80;
+export const DUR = 59.15;
 
 let CUES = [];
 
@@ -109,14 +109,14 @@ export function frame(ctx, t) {
   ctx.fillStyle = '#080c15';
   ctx.fillRect(0, 0, W, H);
 
-  // Scene Dispatch based on voiceover timing
-  if (t < 10.63) {
+  // Scene Dispatch based on ElevenLabs voiceover timing
+  if (t < 11.20) {
     drawScene1(ctx, t);
-  } else if (t < 21.79) {
+  } else if (t < 23.30) {
     drawScene2(ctx, t);
-  } else if (t < 34.65) {
+  } else if (t < 35.80) {
     drawScene3(ctx, t);
-  } else if (t < 47.47) {
+  } else if (t < 48.65) {
     drawScene4(ctx, t);
   } else {
     drawScene5(ctx, t);
