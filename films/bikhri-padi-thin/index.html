@@ -1,0 +1,480 @@
+<!doctype html>
+<html lang="hi">
+<head>
+<meta charset="utf-8">
+<title>Bikhri Padi Thin — Impasto Film</title>
+<style>
+@font-face {
+  font-family: 'Devanagari';
+  src: url('assets/fonts/NotoSansDevanagari.ttf') format('truetype');
+  font-weight: 400 700;
+  font-display: block;
+}
+
+* { box-sizing: border-box; }
+html, body {
+  margin: 0;
+  width: 1080px;
+  height: 1920px;
+  overflow: hidden;
+  background: #0d1217;
+  font-family: 'Devanagari', -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+#film {
+  position: relative;
+  width: 1080px;
+  height: 1920px;
+  overflow: hidden;
+  background: #0d1217;
+}
+
+/* Background shots */
+.shot-container {
+  position: absolute;
+  inset: 0;
+  width: 1080px;
+  height: 1920px;
+  overflow: hidden;
+}
+
+.shot {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  will-change: transform, opacity;
+}
+
+/* Fallback canvas/gradient for impasto background if image is rendering */
+.shot-fallback {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 40%, #3a4a5e 0%, #1f1c1a 70%, #0d1217 100%);
+  z-index: 0;
+}
+
+/* Atmospheric Overlays */
+#sunlight-wash {
+  position: absolute;
+  inset: -100px;
+  background: radial-gradient(ellipse at 45% 25%, rgba(255, 179, 71, 0.35) 0%, rgba(255, 158, 61, 0.15) 45%, transparent 70%);
+  mix-blend-mode: screen;
+  pointer-events: none;
+  opacity: 0;
+  z-index: 10;
+}
+
+#vignette {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 50% 50%, transparent 45%, rgba(15, 20, 26, 0.45) 80%, rgba(8, 12, 16, 0.78) 100%);
+  pointer-events: none;
+  z-index: 11;
+}
+
+#grain {
+  position: absolute;
+  inset: 0;
+  background: repeating-radial-gradient(circle at 50% 50%, transparent 0, rgba(0,0,0,0.03) 1px, transparent 2px);
+  opacity: 0.45;
+  pointer-events: none;
+  z-index: 12;
+}
+
+/* Particles: Petals & Dust */
+#particles-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 13;
+}
+
+.petal {
+  position: absolute;
+  display: block;
+  background: linear-gradient(135deg, #e0245c 0%, #c0392b 45%, #9d174d 100%);
+  border-radius: 80% 15% 75% 25%;
+  box-shadow: 0 0 6px rgba(192, 57, 43, 0.4), inset 1px 1px 2px rgba(255, 209, 102, 0.3);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.dust {
+  position: absolute;
+  display: block;
+  border-radius: 50%;
+  background: #ffd166;
+  opacity: 0;
+  box-shadow: 0 0 8px rgba(255, 209, 102, 0.6);
+  pointer-events: none;
+}
+
+/* Text System - Top-Center y=180 to 420 */
+#text-stage {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 1080px;
+  height: 1920px;
+  pointer-events: none;
+  z-index: 20;
+}
+
+.lyric-card {
+  position: absolute;
+  top: 180px;
+  left: 60px;
+  right: 60px;
+  text-align: center;
+  opacity: 0;
+}
+
+.hindi-line {
+  font-family: 'Devanagari', serif;
+  font-size: 76px;
+  line-height: 1.3;
+  font-weight: 700;
+  color: #FFD166;
+  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.8), 0 0 22px rgba(245, 197, 66, 0.35);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 16px 22px;
+}
+
+.sargam-line {
+  font-family: 'Devanagari', serif;
+  font-size: 56px;
+  line-height: 1.4;
+  font-weight: 600;
+  color: #FFD166;
+  letter-spacing: 4px;
+  text-shadow: 0 2px 16px rgba(0, 0, 0, 0.85), 0 0 28px rgba(255, 209, 102, 0.5);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px 18px;
+}
+
+.word {
+  display: inline-block;
+  opacity: 0;
+  transform: scale(0.96);
+  will-change: transform, opacity;
+}
+
+.word.pulse {
+  text-shadow: 0 0 30px #ffd166, 0 0 50px #ff9e3d;
+}
+
+.meaning-line {
+  margin-top: 22px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 34px;
+  font-weight: 400;
+  line-height: 1.35;
+  color: rgba(255, 255, 255, 0.88);
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.9);
+  opacity: 0;
+  letter-spacing: 0.5px;
+}
+
+/* Peak Glowing Tu */
+#glowing-tu-badge {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  font-family: 'Devanagari', serif;
+  font-size: 110px;
+  font-weight: 700;
+  color: #FFD166;
+  text-shadow: 0 0 35px rgba(255, 209, 102, 0.9), 0 0 70px rgba(255, 158, 61, 0.7);
+  opacity: 0;
+  z-index: 25;
+  pointer-events: none;
+}
+
+/* Outro Title */
+#outro-title {
+  position: absolute;
+  bottom: 230px;
+  left: 60px;
+  right: 60px;
+  text-align: center;
+  font-family: 'Devanagari', serif;
+  font-size: 50px;
+  font-weight: 600;
+  letter-spacing: 3px;
+  color: #FFD166;
+  text-shadow: 0 2px 16px rgba(0, 0, 0, 0.9), 0 0 25px rgba(255, 209, 102, 0.4);
+  opacity: 0;
+  z-index: 20;
+}
+
+#outro-sub {
+  font-family: -apple-system, sans-serif;
+  font-size: 26px;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.7);
+  letter-spacing: 2px;
+  margin-top: 12px;
+}
+
+/* Final black fade */
+#black-fade {
+  position: absolute;
+  inset: 0;
+  background: #000000;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 100;
+}
+</style>
+</head>
+<body>
+<div id="film" data-composition-id="bikhri-padi-thin" data-start="0" data-duration="37.5" data-width="1080" data-height="1920" data-fps="30">
+  <div class="shot-fallback"></div>
+  <div class="shot-container">
+    <img id="shot-0" class="shot clip" src="assets/images/01-road-walk.png" data-start="0" data-duration="9.60" data-track-index="0" style="transform-origin:50% 40%" alt="Beat 0: Broken petals under tree">
+    <img id="shot-1" class="shot clip" src="assets/images/02-hands-gathering.png" data-start="9.2" data-duration="7.30" data-track-index="1" style="transform-origin:50% 50%" alt="Beat 1: Hands gathering petals">
+    <img id="shot-2" class="shot clip" src="assets/images/03-name-tu.png" data-start="16.1" data-duration="6.40" data-track-index="2" style="transform-origin:50% 45%" alt="Beat 2: Name Tu completed in sunlight">
+    <img id="shot-3" class="shot clip" src="assets/images/04-hands-shielding.png" data-start="22.1" data-duration="6.30" data-track-index="3" style="transform-origin:50% 45%" alt="Beat 3: Shielding name from wind">
+    <img id="shot-4" class="shot clip" src="assets/images/05-sunlight-bloom.png" data-start="28" data-duration="5.80" data-track-index="4" style="transform-origin:50% 50%" alt="Beat 4: Sunlight and blooming rose">
+    <img id="shot-5" class="shot clip" src="assets/images/06-boy-walking-away.png" data-start="33.4" data-duration="4.10" data-track-index="5" style="transform-origin:50% 40%" alt="Beat 5: Boy walks away, name holds">
+  </div>
+
+  <div id="sunlight-wash" class="clip" data-start="0" data-duration="37.5" data-track-index="10"></div>
+  <div id="vignette" class="clip" data-start="0" data-duration="37.5" data-track-index="11"></div>
+  <div id="grain" class="clip" data-start="0" data-duration="37.5" data-track-index="12"></div>
+  <div id="particles-layer" class="clip" data-start="0" data-duration="37.5" data-track-index="13"><i id="petal-0" class="petal" style="left:35px;top:50px;width:18px;height:12px"></i><i id="petal-1" class="petal" style="left:96px;top:157px;width:23px;height:16px"></i><i id="petal-2" class="petal" style="left:157px;top:264px;width:28px;height:20px"></i><i id="petal-3" class="petal" style="left:218px;top:371px;width:33px;height:12px"></i><i id="petal-4" class="petal" style="left:279px;top:478px;width:18px;height:16px"></i><i id="petal-5" class="petal" style="left:340px;top:585px;width:23px;height:20px"></i><i id="petal-6" class="petal" style="left:401px;top:692px;width:28px;height:12px"></i><i id="petal-7" class="petal" style="left:462px;top:799px;width:33px;height:16px"></i><i id="petal-8" class="petal" style="left:523px;top:906px;width:18px;height:20px"></i><i id="petal-9" class="petal" style="left:584px;top:1013px;width:23px;height:12px"></i><i id="petal-10" class="petal" style="left:645px;top:1120px;width:28px;height:16px"></i><i id="petal-11" class="petal" style="left:706px;top:1227px;width:33px;height:20px"></i><i id="petal-12" class="petal" style="left:767px;top:1334px;width:18px;height:12px"></i><i id="petal-13" class="petal" style="left:828px;top:1441px;width:23px;height:16px"></i><i id="petal-14" class="petal" style="left:889px;top:1548px;width:28px;height:20px"></i><i id="petal-15" class="petal" style="left:950px;top:1655px;width:33px;height:12px"></i><i id="petal-16" class="petal" style="left:1011px;top:1762px;width:18px;height:16px"></i><i id="petal-17" class="petal" style="left:52px;top:69px;width:23px;height:20px"></i><i id="dust-0" class="dust" style="left:71px;top:120px;width:3px;height:3px"></i><i id="dust-1" class="dust" style="left:110px;top:193px;width:4px;height:4px"></i><i id="dust-2" class="dust" style="left:149px;top:266px;width:5px;height:5px"></i><i id="dust-3" class="dust" style="left:188px;top:339px;width:3px;height:3px"></i><i id="dust-4" class="dust" style="left:227px;top:412px;width:4px;height:4px"></i><i id="dust-5" class="dust" style="left:266px;top:485px;width:5px;height:5px"></i><i id="dust-6" class="dust" style="left:305px;top:558px;width:3px;height:3px"></i><i id="dust-7" class="dust" style="left:344px;top:631px;width:4px;height:4px"></i><i id="dust-8" class="dust" style="left:383px;top:704px;width:5px;height:5px"></i><i id="dust-9" class="dust" style="left:422px;top:777px;width:3px;height:3px"></i><i id="dust-10" class="dust" style="left:461px;top:850px;width:4px;height:4px"></i><i id="dust-11" class="dust" style="left:500px;top:923px;width:5px;height:5px"></i><i id="dust-12" class="dust" style="left:539px;top:996px;width:3px;height:3px"></i><i id="dust-13" class="dust" style="left:578px;top:1069px;width:4px;height:4px"></i><i id="dust-14" class="dust" style="left:617px;top:1142px;width:5px;height:5px"></i><i id="dust-15" class="dust" style="left:656px;top:1215px;width:3px;height:3px"></i><i id="dust-16" class="dust" style="left:695px;top:1288px;width:4px;height:4px"></i><i id="dust-17" class="dust" style="left:734px;top:1361px;width:5px;height:5px"></i><i id="dust-18" class="dust" style="left:773px;top:1434px;width:3px;height:3px"></i><i id="dust-19" class="dust" style="left:812px;top:1507px;width:4px;height:4px"></i><i id="dust-20" class="dust" style="left:851px;top:1580px;width:5px;height:5px"></i><i id="dust-21" class="dust" style="left:890px;top:1653px;width:3px;height:3px"></i><i id="dust-22" class="dust" style="left:929px;top:1726px;width:4px;height:4px"></i><i id="dust-23" class="dust" style="left:968px;top:1799px;width:5px;height:5px"></i><i id="dust-24" class="dust" style="left:1007px;top:22px;width:3px;height:3px"></i><i id="dust-25" class="dust" style="left:6px;top:95px;width:4px;height:4px"></i><i id="dust-26" class="dust" style="left:45px;top:168px;width:5px;height:5px"></i><i id="dust-27" class="dust" style="left:84px;top:241px;width:3px;height:3px"></i></div>
+
+  <div id="text-stage" class="clip" data-start="0" data-duration="37.5" data-track-index="14">
+    
+    <div id="lyric-0" class="lyric-card">
+      <div class="hindi-line">
+        <span id="lyric-0-w-0" class="word">आ...</span>
+        <span id="lyric-0-w-1" class="word">बिखरी</span>
+        <span id="lyric-0-w-2" class="word">पड़ी</span>
+        <span id="lyric-0-w-3" class="word">थीं</span>
+        <span id="lyric-0-w-4" class="word">टूट</span>
+        <span id="lyric-0-w-5" class="word">के</span>
+        <span id="lyric-0-w-6" class="word">कलियाँ</span>
+        <span id="lyric-0-w-7" class="word">ज़मीन</span>
+        <span id="lyric-0-w-8" class="word">पर</span>
+      </div>
+      <div id="lyric-0-meaning" class="meaning-line">The buds lay broken, scattered on the ground;</div>
+    </div>
+
+    <div id="lyric-1" class="lyric-card">
+      <div class="hindi-line">
+        <span id="lyric-1-w-0" class="word">तरतीब</span>
+        <span id="lyric-1-w-1" class="word">दे</span>
+        <span id="lyric-1-w-2" class="word">के</span>
+        <span id="lyric-1-w-3" class="word">मैंने</span>
+        <span id="lyric-1-w-4" class="word">तेरा</span>
+        <span id="lyric-1-w-5" class="word pulse">नाम</span>
+        <span id="lyric-1-w-6" class="word">लिख</span>
+        <span id="lyric-1-w-7" class="word">दिया</span>
+      </div>
+      <div id="lyric-1-meaning" class="meaning-line">set them in order, and wrote your name;</div>
+    </div>
+
+    <div id="lyric-2" class="lyric-card">
+      <div class="hindi-line">
+        <span id="lyric-2-w-0" class="word">तरतीब</span>
+        <span id="lyric-2-w-1" class="word">दे</span>
+        <span id="lyric-2-w-2" class="word">के</span>
+        <span id="lyric-2-w-3" class="word">मैंने</span>
+        <span id="lyric-2-w-4" class="word">तेरा</span>
+        <span id="lyric-2-w-5" class="word">नाम</span>
+        <span id="lyric-2-w-6" class="word">लिख</span>
+        <span id="lyric-2-w-7" class="word">दिया</span>
+      </div>
+      <div id="lyric-2-meaning" class="meaning-line">from what was broken, I wrote your name;</div>
+    </div>
+
+    <div id="lyric-3" class="lyric-card">
+      <div class="hindi-line">
+        <span id="lyric-3-w-0" class="word">आ...</span>
+      </div>
+      <div id="lyric-3-meaning" class="meaning-line">The wind came, but the name did not scatter; he protected it.</div>
+    </div>
+
+    <div id="lyric-4" class="lyric-card">
+      <div class="sargam-line">
+        <span id="lyric-4-w-0" class="word">ग म म ध नि ध नि ध नि ध ग म ग म ध नि</span>
+      </div>
+      <div id="lyric-4-meaning" class="meaning-line">Sunlight breaks through, and what was broken blooms again.</div>
+    </div>
+    <div id="glowing-tu-badge">तू</div>
+    <div id="outro-title">
+      <div>बिखरी पड़ी थीं</div>
+      <div id="outro-sub">Bikhri Padi Thin</div>
+    </div>
+  </div>
+
+  <div id="black-fade" class="clip" data-start="0" data-duration="37.5" data-track-index="15"></div>
+  <audio id="song" class="clip" src="assets/audio/source.wav" data-start="0" data-duration="37.5" data-volume="1" data-track-index="16"></audio>
+</div>
+
+<script src="assets/js/gsap.min.js"></script>
+<script>
+const duration = 37.5;
+const tl = gsap.timeline({ paused: true });
+
+// Initial fade in from black (0.8s)
+tl.fromTo('#black-fade', { opacity: 1 }, { opacity: 0, duration: 0.8, ease: 'sine.out' }, 0);
+
+// Shots crossfades and Ken Burns motion
+
+tl.fromTo('#shot-0', { opacity: 0 }, { opacity: 1, duration: 0.8, ease: 'sine.inOut', immediateRender: false }, 0);
+tl.fromTo('#shot-0', { scale: 1 }, { scale: 1.05, duration: 9.60, ease: 'none', immediateRender: false }, 0);
+tl.to('#shot-0', { opacity: 0, duration: 0.8, ease: 'sine.inOut' }, 8.80);
+
+
+tl.fromTo('#shot-1', { opacity: 0 }, { opacity: 1, duration: 0.6, ease: 'sine.inOut', immediateRender: false }, 9.2);
+tl.fromTo('#shot-1', { scale: 1 }, { scale: 1.05, duration: 7.30, ease: 'none', immediateRender: false }, 9.2);
+tl.to('#shot-1', { opacity: 0, duration: 0.6, ease: 'sine.inOut' }, 15.90);
+
+
+tl.fromTo('#shot-2', { opacity: 0 }, { opacity: 1, duration: 0.6, ease: 'sine.inOut', immediateRender: false }, 16.1);
+tl.fromTo('#shot-2', { scale: 1 }, { scale: 1.05, duration: 6.40, ease: 'none', immediateRender: false }, 16.1);
+tl.to('#shot-2', { opacity: 0, duration: 0.6, ease: 'sine.inOut' }, 21.90);
+
+
+tl.fromTo('#shot-3', { opacity: 0 }, { opacity: 1, duration: 0.8, ease: 'sine.inOut', immediateRender: false }, 22.1);
+tl.fromTo('#shot-3', { scale: 1 }, { scale: 1.05, duration: 6.30, ease: 'none', immediateRender: false }, 22.1);
+tl.to('#shot-3', { opacity: 0, duration: 0.8, ease: 'sine.inOut' }, 27.60);
+
+
+tl.fromTo('#shot-4', { opacity: 0 }, { opacity: 1, duration: 0.6, ease: 'sine.inOut', immediateRender: false }, 28);
+tl.fromTo('#shot-4', { scale: 1.06 }, { scale: 1, duration: 5.80, ease: 'none', immediateRender: false }, 28);
+tl.to('#shot-4', { opacity: 0, duration: 0.6, ease: 'sine.inOut' }, 33.20);
+
+
+tl.fromTo('#shot-5', { opacity: 0 }, { opacity: 1, duration: 0.6, ease: 'sine.inOut', immediateRender: false }, 33.4);
+tl.fromTo('#shot-5', { scale: 1 }, { scale: 1.02, duration: 4.10, ease: 'none', immediateRender: false }, 33.4);
+
+
+
+// Sunlight wash animation (rises in Beats 2-4)
+tl.fromTo('#sunlight-wash', { opacity: 0 }, { opacity: 0.75, duration: 6, ease: 'sine.inOut' }, 16.0);
+tl.to('#sunlight-wash', { opacity: 1.0, duration: 8, ease: 'sine.inOut' }, 26.0);
+
+// Particles motion
+for (let i = 0; i < 18; i++) {
+  const pId = '#petal-' + i;
+  tl.fromTo(pId, 
+    { opacity: 0, y: -80, rotationX: i * 20, rotationY: i * 35, rotationZ: i * 15 }, 
+    { opacity: 0.7, duration: 2.5, ease: 'sine.inOut' }, 
+    (i * 1.5) % 25
+  );
+  tl.to(pId, 
+    { 
+      y: 700 + (i % 5) * 160, 
+      x: (i % 2 === 0 ? 1 : -1) * (60 + (i % 4) * 30), 
+      rotationZ: 180 + i * 45, 
+      rotationY: 360 + i * 60, 
+      duration: duration, 
+      ease: 'none' 
+    }, 
+    0
+  );
+}
+
+for (let i = 0; i < 28; i++) {
+  const dId = '#dust-' + i;
+  tl.fromTo(dId, 
+    { opacity: 0, scale: 0.5, y: 0 }, 
+    { opacity: 0.35 + (i % 4) * 0.1, duration: 3, ease: 'sine.inOut' }, 
+    (i * 0.9) % 22
+  );
+  tl.to(dId, 
+    { 
+      y: -240 - (i % 6) * 40, 
+      x: Math.sin(i) * 70, 
+      duration: duration, 
+      ease: 'sine.inOut' 
+    }, 
+    0
+  );
+}
+
+// Lyrics word-by-word entry
+tl.set('#lyric-0', { opacity: 1 }, 0.6);
+tl.fromTo('#lyric-0-w-0', { opacity: 0, filter: 'blur(8px)', scale: 0.96 }, { opacity: 1, filter: 'blur(0px)', scale: 1.0, duration: 0.35, ease: 'power2.out' }, 0.8);
+tl.fromTo('#lyric-0-w-1', { opacity: 0, filter: 'blur(8px)', scale: 0.96 }, { opacity: 1, filter: 'blur(0px)', scale: 1.0, duration: 0.35, ease: 'power2.out' }, 1.5);
+tl.fromTo('#lyric-0-w-2', { opacity: 0, filter: 'blur(8px)', scale: 0.96 }, { opacity: 1, filter: 'blur(0px)', scale: 1.0, duration: 0.35, ease: 'power2.out' }, 2.2);
+tl.fromTo('#lyric-0-w-3', { opacity: 0, filter: 'blur(8px)', scale: 0.96 }, { opacity: 1, filter: 'blur(0px)', scale: 1.0, duration: 0.35, ease: 'power2.out' }, 2.9);
+tl.fromTo('#lyric-0-w-4', { opacity: 0, filter: 'blur(8px)', scale: 0.96 }, { opacity: 1, filter: 'blur(0px)', scale: 1.0, duration: 0.35, ease: 'power2.out' }, 3.6);
+tl.fromTo('#lyric-0-w-5', { opacity: 0, filter: 'blur(8px)', scale: 0.96 }, { opacity: 1, filter: 'blur(0px)', scale: 1.0, duration: 0.35, ease: 'power2.out' }, 4.3);
+tl.fromTo('#lyric-0-w-6', { opacity: 0, filter: 'blur(8px)', scale: 0.96 }, { opacity: 1, filter: 'blur(0px)', scale: 1.0, duration: 0.35, ease: 'power2.out' }, 5);
+tl.fromTo('#lyric-0-w-7', { opacity: 0, filter: 'blur(8px)', scale: 0.96 }, { opacity: 1, filter: 'blur(0px)', scale: 1.0, duration: 0.35, ease: 'power2.out' }, 5.7);
+tl.fromTo('#lyric-0-w-8', { opacity: 0, filter: 'blur(8px)', scale: 0.96 }, { opacity: 1, filter: 'blur(0px)', scale: 1.0, duration: 0.35, ease: 'power2.out' }, 6.4);
+tl.fromTo('#lyric-0-meaning', { opacity: 0, y: 8 }, { opacity: 0.88, y: 0, duration: 0.5, ease: 'sine.out' }, 6.8);
+tl.to('#lyric-0', { opacity: 0, filter: 'blur(4px)', duration: 0.4, ease: 'sine.in' }, 9.00);
+
+tl.set('#lyric-1', { opacity: 1 }, 9.6);
+tl.fromTo('#lyric-1-w-0', { opacity: 0, filter: 'blur(8px)', scale: 0.96 }, { opacity: 1, filter: 'blur(0px)', scale: 1.0, duration: 0.35, ease: 'power2.out' }, 9.8);
+tl.fromTo('#lyric-1-w-1', { opacity: 0, filter: 'blur(8px)', scale: 0.96 }, { opacity: 1, filter: 'blur(0px)', scale: 1.0, duration: 0.35, ease: 'power2.out' }, 10.4);
+tl.fromTo('#lyric-1-w-2', { opacity: 0, filter: 'blur(8px)', scale: 0.96 }, { opacity: 1, filter: 'blur(0px)', scale: 1.0, duration: 0.35, ease: 'power2.out' }, 11);
+tl.fromTo('#lyric-1-w-3', { opacity: 0, filter: 'blur(8px)', scale: 0.96 }, { opacity: 1, filter: 'blur(0px)', scale: 1.0, duration: 0.35, ease: 'power2.out' }, 11.6);
+tl.fromTo('#lyric-1-w-4', { opacity: 0, filter: 'blur(8px)', scale: 0.96 }, { opacity: 1, filter: 'blur(0px)', scale: 1.0, duration: 0.35, ease: 'power2.out' }, 12.2);
+tl.fromTo('#lyric-1-w-5', { opacity: 0, filter: 'blur(8px)', scale: 0.96 }, { opacity: 1, filter: 'blur(0px)', scale: 1.0, duration: 0.35, ease: 'power2.out' }, 12.8);
+tl.to('#lyric-1-w-5', { textShadow: '0 0 35px #FFD166, 0 0 60px #FF9E3D', duration: 0.4, yoyo: true, repeat: 1 }, 12.9);
+tl.fromTo('#lyric-1-w-6', { opacity: 0, filter: 'blur(8px)', scale: 0.96 }, { opacity: 1, filter: 'blur(0px)', scale: 1.0, duration: 0.35, ease: 'power2.out' }, 13.4);
+tl.fromTo('#lyric-1-w-7', { opacity: 0, filter: 'blur(8px)', scale: 0.96 }, { opacity: 1, filter: 'blur(0px)', scale: 1.0, duration: 0.35, ease: 'power2.out' }, 14);
+tl.fromTo('#lyric-1-meaning', { opacity: 0, y: 8 }, { opacity: 0.88, y: 0, duration: 0.5, ease: 'sine.out' }, 14.3);
+tl.to('#lyric-1', { opacity: 0, filter: 'blur(4px)', duration: 0.4, ease: 'sine.in' }, 15.90);
+
+tl.set('#lyric-2', { opacity: 1 }, 16.5);
+tl.fromTo('#lyric-2-w-0', { opacity: 0, filter: 'blur(8px)', scale: 0.96 }, { opacity: 1, filter: 'blur(0px)', scale: 1.0, duration: 0.35, ease: 'power2.out' }, 16.6);
+tl.fromTo('#lyric-2-w-1', { opacity: 0, filter: 'blur(8px)', scale: 0.96 }, { opacity: 1, filter: 'blur(0px)', scale: 1.0, duration: 0.35, ease: 'power2.out' }, 17.1);
+tl.fromTo('#lyric-2-w-2', { opacity: 0, filter: 'blur(8px)', scale: 0.96 }, { opacity: 1, filter: 'blur(0px)', scale: 1.0, duration: 0.35, ease: 'power2.out' }, 17.6);
+tl.fromTo('#lyric-2-w-3', { opacity: 0, filter: 'blur(8px)', scale: 0.96 }, { opacity: 1, filter: 'blur(0px)', scale: 1.0, duration: 0.35, ease: 'power2.out' }, 18.1);
+tl.fromTo('#lyric-2-w-4', { opacity: 0, filter: 'blur(8px)', scale: 0.96 }, { opacity: 1, filter: 'blur(0px)', scale: 1.0, duration: 0.35, ease: 'power2.out' }, 18.6);
+tl.fromTo('#lyric-2-w-5', { opacity: 0, filter: 'blur(8px)', scale: 0.96 }, { opacity: 1, filter: 'blur(0px)', scale: 1.0, duration: 0.35, ease: 'power2.out' }, 19.1);
+tl.fromTo('#lyric-2-w-6', { opacity: 0, filter: 'blur(8px)', scale: 0.96 }, { opacity: 1, filter: 'blur(0px)', scale: 1.0, duration: 0.35, ease: 'power2.out' }, 19.6);
+tl.fromTo('#lyric-2-w-7', { opacity: 0, filter: 'blur(8px)', scale: 0.96 }, { opacity: 1, filter: 'blur(0px)', scale: 1.0, duration: 0.35, ease: 'power2.out' }, 20.1);
+tl.fromTo('#lyric-2-meaning', { opacity: 0, y: 8 }, { opacity: 0.88, y: 0, duration: 0.5, ease: 'sine.out' }, 20.4);
+tl.to('#lyric-2', { opacity: 0, filter: 'blur(4px)', duration: 0.4, ease: 'sine.in' }, 21.90);
+
+tl.set('#lyric-3', { opacity: 1 }, 22.5);
+tl.fromTo('#lyric-3-w-0', { opacity: 0, filter: 'blur(8px)', scale: 0.96 }, { opacity: 1, filter: 'blur(0px)', scale: 1.0, duration: 0.35, ease: 'power2.out' }, 22.8);
+tl.fromTo('#lyric-3-meaning', { opacity: 0, y: 8 }, { opacity: 0.88, y: 0, duration: 0.5, ease: 'sine.out' }, 24.2);
+tl.to('#lyric-3', { opacity: 0, filter: 'blur(4px)', duration: 0.4, ease: 'sine.in' }, 27.80);
+
+tl.set('#lyric-4', { opacity: 1 }, 28.4);
+tl.fromTo('#lyric-4-w-0', { opacity: 0, filter: 'blur(8px)', scale: 0.96 }, { opacity: 1, filter: 'blur(0px)', scale: 1.0, duration: 0.35, ease: 'power2.out' }, 28.6);
+tl.fromTo('#lyric-4-meaning', { opacity: 0, y: 8 }, { opacity: 0.88, y: 0, duration: 0.5, ease: 'sine.out' }, 29.5);
+tl.to('#lyric-4', { opacity: 0, filter: 'blur(4px)', duration: 0.4, ease: 'sine.in' }, 33.20);
+
+// Special glowing Tu in Beat 2 (20.0s)
+tl.fromTo('#glowing-tu-badge', 
+  { opacity: 0, xPercent: -50, yPercent: -50, scale: 0.8 }, 
+  { opacity: 0.95, xPercent: -50, yPercent: -50, scale: 1.05, duration: 0.4, ease: 'back.out(1.5)', immediateRender: false }, 
+  20.0
+);
+tl.to('#glowing-tu-badge', { opacity: 0, scale: 1.15, duration: 0.6, ease: 'sine.in' }, 21.6);
+
+// Outro title (34.2s)
+tl.fromTo('#outro-title', 
+  { opacity: 0, y: 15 }, 
+  { opacity: 1, y: 0, duration: 0.8, ease: 'sine.out', immediateRender: false }, 
+  34.2
+);
+
+// Final fade to black at 36.8s to 37.5s
+tl.to('#black-fade', 
+  { opacity: 1, duration: 0.7, ease: 'sine.in' }, 
+  36.8
+);
+
+window.__timelines = { 'bikhri-padi-thin': tl };
+</script>
+</body>
+</html>

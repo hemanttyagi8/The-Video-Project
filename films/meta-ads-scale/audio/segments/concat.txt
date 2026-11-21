@@ -1,0 +1,5 @@
+file 'E:/xammp/htdocs/The-Video-Project/films/meta-ads-scale/audio/segments/scene1.mp3'
+file 'E:/xammp/htdocs/The-Video-Project/films/meta-ads-scale/audio/segments/scene2.mp3'
+file 'E:/xammp/htdocs/The-Video-Project/films/meta-ads-scale/audio/segments/scene3.mp3'
+file 'E:/xammp/htdocs/The-Video-Project/films/meta-ads-scale/audio/segments/scene4.mp3'
+file 'E:/xammp/htdocs/The-Video-Project/films/meta-ads-scale/audio/segments/scene5.mp3'

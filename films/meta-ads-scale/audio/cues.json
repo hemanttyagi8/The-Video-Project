@@ -1,0 +1,37 @@
+[
+  {
+    "id": "scene1",
+    "display_text": "Agar aapka business scale nahi ho raha, toh problem product me nahi, aapki reach me hai!",
+    "start": 0.0,
+    "end": 5.85,
+    "duration": 5.85
+  },
+  {
+    "id": "scene2",
+    "display_text": "Instagram par roz posts daalne se scale nahi hota. Meta Ads ka AI laser-sharp targeting se ideal buyers ko dhoondhta hai.",
+    "start": 6.2,
+    "end": 16.1,
+    "duration": 9.9
+  },
+  {
+    "id": "scene3",
+    "display_text": "Yeh kaam karta hai ek proven 3-stage funnel par: Top Awareness, Middle Consideration, aur Bottom Purchase!",
+    "start": 16.45,
+    "end": 25.28,
+    "duration": 8.83
+  },
+  {
+    "id": "scene4",
+    "display_text": "Aur 97% log jo cart chhod gaye? Meta Pixel unhe retarget karke deta hai 4X se 5X ROAS!",
+    "start": 25.63,
+    "end": 35.53,
+    "duration": 9.9
+  },
+  {
+    "id": "scene5",
+    "display_text": "Stop guessing, start scaling! Follow @megacrowdlab aur launch karo apna high-ROI Meta ad campaign!",
+    "start": 35.88,
+    "end": 45.23,
+    "duration": 9.35
+  }
+]

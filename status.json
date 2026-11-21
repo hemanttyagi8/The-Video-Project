@@ -1,0 +1,10 @@
+{
+  "label": "DIL KI BAAT",
+  "lines": ["कुछ बातें", "कही नहीं जातीं,", "बस महसूस होती हैं।"],
+  "footer": "lafzon se pare",
+  "duration": 12,
+  "music": "assets/music/demo-ambient.wav",
+  "musicVolume": 0.65,
+  "background": "",
+  "accent": "#d9b788"
+}

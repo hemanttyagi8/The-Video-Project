@@ -1,0 +1,17 @@
+{
+  "name": "shayari-status-studio",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Local vertical shayari and music video studio",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "preview": "npm run build && node scripts/hf.mjs preview",
+    "lint": "npm run build && node scripts/hf.mjs lint",
+    "render": "npm run build && node scripts/hf.mjs render --output output/status.mp4 --fps 30 --quality high --workers 1",
+    "doctor": "node scripts/hf.mjs doctor"
+  },
+  "dependencies": {
+    "gsap": "3.15.1",
+    "hyperframes": "0.9.56"
+  }
+}
